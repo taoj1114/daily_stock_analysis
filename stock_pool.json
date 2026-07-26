@@ -1,0 +1,49 @@
+{
+  "sectors": [
+    {
+      "name": "科技",
+      "weight": 3,
+      "pools": ["AAPL", "MSFT", "CRM", "ORCL", "ADBE"]
+    },
+    {
+      "name": "半导体",
+      "weight": 2,
+      "pools": ["NVDA", "AVGO", "AMD", "QCOM", "MRVL"]
+    },
+    {
+      "name": "互联网/云",
+      "weight": 2,
+      "pools": ["AMZN", "GOOGL", "NFLX", "SNOW", "DDOG"]
+    },
+    {
+      "name": "社交/消费互联网",
+      "weight": 1,
+      "pools": ["META", "SNAP", "PINS", "SPOT"]
+    },
+    {
+      "name": "新能源车/消费",
+      "weight": 1,
+      "pools": ["TSLA", "RIVN", "F", "GM"]
+    },
+    {
+      "name": "金融",
+      "weight": 2,
+      "pools": ["JPM", "V", "MA", "GS", "BAC"]
+    },
+    {
+      "name": "医疗健康",
+      "weight": 2,
+      "pools": ["UNH", "LLY", "ABBV", "MRK", "ISRG"]
+    },
+    {
+      "name": "能源",
+      "weight": 1,
+      "pools": ["XOM", "CVX", "COP", "OXY"]
+    },
+    {
+      "name": "工业/军工",
+      "weight": 1,
+      "pools": ["CAT", "GE", "BA", "HON"]
+    }
+  ]
+}

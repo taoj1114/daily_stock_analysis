@@ -62,6 +62,19 @@ jobs:
         run: |
           mkdir -p data logs reports
       
+      - name: 恢复轮动状态
+        uses: actions/cache@v4
+        with:
+          path: stock_state.json
+          key: stock-rotation-${{ github.run_id }}
+          restore-keys: |
+            stock-rotation-
+      
+      - name: 行业轮动选股
+        run: |
+          python scripts/rotate_stocks.py
+          echo "当前股票: $STOCK_LIST"
+      
       - name: 执行股票分析
         env:
           # ==========================================
