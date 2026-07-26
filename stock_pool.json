@@ -11,6 +11,11 @@
       "pools": ["NVDA", "AVGO", "AMD", "QCOM", "MRVL"]
     },
     {
+      "name": "存储芯片",
+      "weight": 1,
+      "pools": ["MU", "STX", "WDC", "KLAC", "LRCX"]
+    },
+    {
       "name": "互联网/云",
       "weight": 2,
       "pools": ["AMZN", "GOOGL", "NFLX", "SNOW", "DDOG"]
@@ -32,7 +37,7 @@
     },
     {
       "name": "医疗健康",
-      "weight": 2,
+      "weight": 1,
       "pools": ["UNH", "LLY", "ABBV", "MRK", "ISRG"]
     },
     {
