@@ -65,6 +65,24 @@ _BUILTIN_SOURCE_TEMPLATES = [
         "market": "global",
         "description": "Public market news RSS for global market context. Test before enabling.",
     },
+    {
+        "template_id": "yahoo-finance-top",
+        "name": "Yahoo Finance Top Stories",
+        "source_type": "rss",
+        "url": "https://finance.yahoo.com/news/rssindex",
+        "scope_type": "market",
+        "market": "us",
+        "description": "Yahoo Finance headlines covering US market, top financial and business news.",
+    },
+    {
+        "template_id": "yahoo-finance-tech",
+        "name": "Yahoo Finance Tech",
+        "source_type": "rss",
+        "url": "https://finance.yahoo.com/rss/tech",
+        "scope_type": "market",
+        "market": "us",
+        "description": "Yahoo Finance technology sector news, relevant for US tech stocks.",
+    },
 ]
 _NEWSNOW_DEFAULT_SOURCE_DEFS = [
     {
