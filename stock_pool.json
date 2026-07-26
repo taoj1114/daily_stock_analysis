@@ -2,13 +2,18 @@
   "sectors": [
     {
       "name": "科技",
-      "weight": 3,
+      "weight": 2,
       "pools": ["AAPL", "MSFT", "CRM", "ORCL", "ADBE"]
     },
     {
       "name": "半导体",
       "weight": 2,
       "pools": ["NVDA", "AVGO", "AMD", "QCOM", "MRVL"]
+    },
+    {
+      "name": "加密货币",
+      "weight": 1,
+      "pools": ["COIN", "MSTR", "RIOT", "MARA", "CLSK"]
     },
     {
       "name": "存储芯片",
