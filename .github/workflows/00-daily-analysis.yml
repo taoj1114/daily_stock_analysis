@@ -512,14 +512,17 @@ jobs:
             echo "⚡ 已启用强制运行模式（跳过交易日检查）"
           fi
 
-          # 执行分析
+          # 执行分析（不发送默认通知）
           if [ "$MODE" = "market-only" ]; then
-            python main.py --market-review $FORCE_RUN_ARG
+            python main.py --market-review --no-notify $FORCE_RUN_ARG
           elif [ "$MODE" = "stocks-only" ]; then
-            python main.py --no-market-review $FORCE_RUN_ARG
+            python main.py --no-market-review --no-notify $FORCE_RUN_ARG
           else
-            python main.py $FORCE_RUN_ARG
+            python main.py --no-notify $FORCE_RUN_ARG
           fi
+
+          # 筛选买卖信号并推送
+          python scripts/send_signals.py
       
       - name: 上传分析报告
         uses: actions/upload-artifact@v6
