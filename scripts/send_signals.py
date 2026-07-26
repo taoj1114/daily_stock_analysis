@@ -46,13 +46,16 @@ for block in stock_blocks:
     name_m = re.search(r'\*\*(.+?)\s*\(' + code + r'\)', block)
     name = name_m.group(1).strip() if name_m else code
     
-    # 提取支撑/压力
-    support_m = re.search(r'\*\*支撑位\*\*.*?([\d.]+)', block)
-    resist_m = re.search(r'\*\*压力位\*\*.*?([\d.]+)', block)
-    close_m = re.search(r'\*\*收盘\*\*.*?([\d.]+)', block)
+    # 提取价格（Markdown 表格格式）
+    close_m = re.search(r'\|\s*([\d.]+)\s*\|\s*[\d.]+\s*\|\s*[\d.]+\s*\|\s*[\d.]+', block)
+    price_m = re.search(r'\|\s*当前价\s*\|\s*([\d.]+)', block)
+    support_m = re.search(r'\|\s*支撑位\s*\|\s*([\d.]+)', block)
+    resist_m = re.search(r'\|\s*压力位\s*\|\s*([\d.]+)', block)
+    ma5_m = re.search(r'\|\s*MA5\s*\|\s*([\d.]+)', block)
     
-    # 提取当前价
-    price_m = re.search(r'当前价.*?([\d.]+)', block)
+    # 提取买卖建议中的价格
+    buy_m = re.search(r'买入.*?([\d.]+)', block)
+    stop_m = re.search(r'止损.*?([\d.]+)', block)
     
     # 提取风险
     risks = re.findall(r'\*\*🚨\s*风险警报\*\*.*?\n([\s\S]*?)(?=\*\*✨|\*\*📢|\*\*###|\Z)', block)
@@ -72,12 +75,20 @@ for block in stock_blocks:
     
     # 构建消息
     msg = f"{signal_type} *{name}* ({code}) — *{score}分*"
+    # 价格线
+    prices = []
     if close_m:
-        msg += f" | 收盘 ${close_m.group(1)}"
+        prices.append(f"💰 ${close_m.group(1)}")
+    if price_m:
+        prices.append(f"当前 {price_m.group(1)}")
+    if prices:
+        msg += "\n   " + " | ".join(prices)
+    if ma5_m:
+        msg += f"\n   📊 MA5 ${ma5_m.group(1)}"
     if support_m:
         msg += f"\n   📉 支撑 ${support_m.group(1)}"
     if resist_m:
-        msg += f" | 📈 压力 ${resist_m.group(1)}"
+        msg += f"\n   📈 压力 ${resist_m.group(1)}"
     if risk_text:
         msg += risk_text
     if cat_text:
