@@ -11,7 +11,7 @@ signals = []
 if os.path.exists(log_file):
     with open(log_file) as f:
         for line in f:
-            m = re.search(r'(\w[\w.]+)\((\w+)\):\s*(\S+)\s*\|\s*评分\s*(\d+)', line)
+            m = re.search(r'\|.*?(\w[\w\s.]+)\((\w+)\):\s*([\u4e00-\u9fff/]+)\s*\|\s*评分\s*(\d+)', line)
             if m:
                 name, code, advice, score = m.group(1), m.group(2), m.group(3), int(m.group(4))
                 signal = None
