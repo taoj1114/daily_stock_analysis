@@ -76,12 +76,12 @@ for code, info in summary_signals.items():
         msg += "\n   " + price_str
     
     levels = []
+    if support_m:
+        levels.append(f"🛑 止损 ${support_m.group(1)}")
     if ma5_m:
         levels.append(f"MA5 ${ma5_m.group(1)}")
-    if support_m:
-        levels.append(f"📉 ${support_m.group(1)}")
     if resist_m:
-        levels.append(f"📈 ${resist_m.group(1)}")
+        levels.append(f"🎯 目标 ${resist_m.group(1)}")
     if levels:
         msg += "\n   " + " | ".join(levels)
     
