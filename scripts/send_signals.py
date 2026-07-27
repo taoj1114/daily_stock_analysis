@@ -76,12 +76,21 @@ for code, info in summary_signals.items():
         msg += "\n   " + price_str
     
     levels = []
-    if support_m:
-        levels.append(f"🛑 止损 ${support_m.group(1)}")
+    is_buy = "买入" in info['signal']
+    if support_m and resist_m:
+        if is_buy:
+            levels.append(f"🛑 止损 ${support_m.group(1)}")
+            levels.append(f"🎯 止盈 ${resist_m.group(1)}")
+        else:
+            levels.append(f"🛑 止损 ${resist_m.group(1)}")
+            levels.append(f"🎯 止盈 ${support_m.group(1)}")
+    else:
+        if support_m:
+            levels.append(f"{'🛑 止损' if is_buy else '🎯 止盈'} ${support_m.group(1)}")
+        if resist_m:
+            levels.append(f"{'🎯 止盈' if is_buy else '🛑 止损'} ${resist_m.group(1)}")
     if ma5_m:
         levels.append(f"MA5 ${ma5_m.group(1)}")
-    if resist_m:
-        levels.append(f"🎯 目标 ${resist_m.group(1)}")
     if levels:
         msg += "\n   " + " | ".join(levels)
     
