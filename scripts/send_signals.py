@@ -53,10 +53,35 @@ for line in content.split('\n'):
     elif current_code:
         stock_blocks[current_code].append(line)
 
-# Step 3: 构造每条信号
+# Step 3: 从 debug 日志提取入场价
+today_d = datetime.now().strftime("%Y%m%d")
+debug_log = f"logs/stock_analysis_debug_{today_d}.log"
+entry_prices = {}  # code -> {"entry": "...", "stop": "...", "target": "..."}
+if os.path.exists(debug_log):
+    with open(debug_log, encoding='utf-8', errors='replace') as f:
+        dlog = f.read()
+    codes_in_log = list(summary_signals.keys())
+    for code in codes_in_log:
+        # 找该股票后的第一个 ideal_buy
+        idx = dlog.find(f'({code})')
+        if idx < 0:
+            # 尝试找没有带括号的版本
+            idx = dlog.find(code)
+        if idx >= 0:
+            chunk = dlog[idx:idx+3000]
+            buy_m = re.search(r'ideal_buy["\']?\s*[:：=]\s*["\']?([^"\'}\n]+)', chunk)
+            stop_m = re.search(r'stop_loss["\']?\s*[:：=]\s*["\']?([^"\'}\n]+)', chunk)
+            target_m = re.search(r'take_profit["\']?\s*[:：=]\s*["\']?([^"\'}\n]+)', chunk)
+            entry = {}
+            if buy_m: entry["entry"] = buy_m.group(1).strip()[:60]
+            if stop_m: entry["stop"] = stop_m.group(1).strip()[:60]
+            if target_m: entry["target"] = target_m.group(1).strip()[:60]
+            if entry: entry_prices[code] = entry
 signals = []
 for code, info in summary_signals.items():
     block = "\n".join(stock_blocks.get(code, []))
+    
+    is_buy = "买入" in info['signal']
     
     msg = f"{info['signal']} *{info['name']}* ({code}) — *{info['score']}分* | {info['advice']}"
     
@@ -75,15 +100,25 @@ for code, info in summary_signals.items():
     if price_str:
         msg += "\n   " + price_str
     
+    if is_buy:
+        # 对于买入信号，入场价优先从 debug 日志提取
+        ep = entry_prices.get(code, {})
+        if ep.get("entry") and "不设" not in ep["entry"] and "等待" not in ep["entry"]:
+            msg += f"\n   🎯 入场 {ep['entry']}"
+        elif support_m:
+            msg += f"\n   🎯 入场 支撑附近 ${support_m.group(1)}"
+    else:
+        # 对于卖出/做空信号
+        msg += f"\n   🎯 入场 当前价附近"
+    
     levels = []
-    is_buy = "买入" in info['signal']
     if support_m and resist_m:
         if is_buy:
-            levels.append(f"🛑 止损 ${support_m.group(1)}")
-            levels.append(f"🎯 止盈 ${resist_m.group(1)}")
+            levels.append(f"🛑 止损 {entry_prices.get(code,{}).get('stop','') or ('支撑 '+support_m.group(1))}")
+            levels.append(f"🎯 止盈 {entry_prices.get(code,{}).get('target','') or ('压力 '+resist_m.group(1))}")
         else:
-            levels.append(f"🛑 止损 ${resist_m.group(1)}")
-            levels.append(f"🎯 止盈 ${support_m.group(1)}")
+            levels.append(f"🛑 止损 {entry_prices.get(code,{}).get('stop','') or ('压力 '+resist_m.group(1))}")
+            levels.append(f"🎯 止盈 {entry_prices.get(code,{}).get('target','') or ('支撑 '+support_m.group(1))}")
     else:
         if support_m:
             levels.append(f"{'🛑 止损' if is_buy else '🎯 止盈'} ${support_m.group(1)}")
